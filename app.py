@@ -46,4 +46,4 @@ def detect_image():
 
 if __name__ == '__main__':
     # You can specify the host and port as needed
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(debug=True)
