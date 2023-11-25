@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Detection</title>
+</head>
+<body>
+    <h1>Face Detection</h1>
+    
+    <form action="/result" method="post">
+        <label for="image_url">Image URL:</label>
+        <input type="text" id="image_url" name="image_url" required>
+        <button type="submit">Detect Face</button>
+    </form>
+
+    <!-- Display result -->
+    {% if 'error' in result %}
+        <p style="color: red;">Error: {{ result.error }}</p>
+    {% elif 'face_detected' in result %}
+        {% if result.face_detected %}
+            <p style="color: green;">Face detected!</p>
+        {% else %}
+            <p>No face detected.</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

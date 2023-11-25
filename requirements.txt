@@ -1,6 +1,6 @@
-Flask==2.0.1
-opencv-python==4.5.3.56
-numpy==1.21.0
-gunicorn==20.1.0
-Pillow==8.4.0
-torch==1.10.0
+Flask
+opencv-python
+numpy
+gunicorn
+Pillow
+torch
