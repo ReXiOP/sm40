@@ -1,12 +1,13 @@
-from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.templating import Jinja2Templates
 import aiohttp
-import cv2
 import torch
+import numpy as np
 from PIL import Image
 from io import BytesIO
 import json
 from datetime import datetime
+from aiohttp import ClientSession
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -14,7 +15,6 @@ templates = Jinja2Templates(directory="templates")
 # Load YOLOv5 model and set device
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = torch.hub.load('ultralytics/yolov5:v6.0', 'yolov5s', pretrained=True).to(device).eval()
-
 
 async def detect_objects(image, class_indices):
     # Preprocess the image
@@ -31,18 +31,15 @@ async def detect_objects(image, class_indices):
 
     return False
 
-
 async def detect_human(image):
     # Class index for person
     return await detect_objects(image, [0])
-
 
 async def detect_animal(image):
     # Class indices for cat and dog
     animal_class_indices = [14, 15, 16, 17, 18, 19, 20, 21, 22, 77]
 
     return await detect_objects(image, animal_class_indices)
-
 
 def save_to_log(url, result):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -55,17 +52,18 @@ def save_to_log(url, result):
     except Exception as e:
         print(f"Error saving to log: {e}")
 
-
 @app.get("/")
 def index(request: Request):
     return templates.TemplateResponse("upload_form.html", {"request": request})
 
-
-@app.post("/result")
-async def result(request: Request, image_url: str = Form(...)):
+@app.get("/result")
+async def result(
+    request: Request,
+    image_url: str = Query(..., description="URL of the image to be analyzed")
+):
     try:
-        # Download the image
-        async with aiohttp.ClientSession() as session:
+        # Download the image with SSL verification disabled
+        async with ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
             async with session.get(image_url) as response:
                 image = await response.read()
 
@@ -84,3 +82,7 @@ async def result(request: Request, image_url: str = Form(...)):
         # Save error to log
         save_to_log(image_url, {"error": str(e)})
         raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
