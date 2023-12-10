@@ -1,0 +1,2 @@
+{"timestamp": "2023-12-10 14:30:54", "url": "http://avatars.githubusercontent.com/u/108050827?v=4", "result": {"face_detected": false, "animal_detected": false}}
+{"timestamp": "2023-12-10 14:31:09", "url": "https://img.freepik.com/free-photo/bohemian-man-with-his-arms-crossed_1368-3542.jpg?size=626&ext=jpg&ga=GA1.1.1129121729.1700117795&semt=sph", "result": {"face_detected": true, "animal_detected": false}}
