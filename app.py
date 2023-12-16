@@ -9,12 +9,16 @@ import ssl
 import certifi
 from datetime import datetime
 import json
+import pytz  # Import the pytz library
 
 app = Flask(__name__)
 
 # Load YOLOv5 model and set device
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = torch.hub.load('ultralytics/yolov5:v6.0', 'yolov5s', pretrained=True).to(device).eval()
+
+# Set the Bangladeshi time zone
+bangladesh_time_zone = pytz.timezone('Asia/Dhaka')
 
 def detect_objects(image, class_indices):
     # Preprocess the image
@@ -41,7 +45,7 @@ def detect_animal(image):
     return detect_objects(image, animal_class_indices)
 
 def save_to_log(url, result):
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now(bangladesh_time_zone).strftime("%Y-%m-%d %H:%M:%S %Z")  # Use the Bangladeshi time zone
     log_entry = {"timestamp": timestamp, "url": url, "result": result}
 
     try:
