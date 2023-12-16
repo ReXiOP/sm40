@@ -45,7 +45,7 @@ def detect_animal(image):
     return detect_objects(image, animal_class_indices)
 
 def save_to_log(url, result):
-    timestamp = datetime.now(bangladesh_time_zone).strftime("%Y-%m-%d %H:%M:%S %Z")  # Use the Bangladeshi time zone
+    timestamp = datetime.now(bangladesh_time_zone).strftime("%Y-%m-%d %I:%M:%S %p")  # Use the 12-hour AM/PM format
     log_entry = {"timestamp": timestamp, "url": url, "result": result}
 
     try:
